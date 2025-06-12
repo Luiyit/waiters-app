@@ -1,40 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import axiosClient from "@/clients/axiosClient";
+
+import React from "react";
 import Link from "next/link";
-import type { Product } from "@/types/products";
-import type { ApiResponse } from "@/types/global";
+import { Product } from "@/types/products";
+import { useProducts, useDeleteProduct } from "./productHooks";
 
 export default function ProductsListPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const res = await axiosClient.get<ApiResponse<Product[]>>("/products");
-      setProducts(res.data.data);
-      setError(null);
-    } catch {
-      setError("Failed to load products");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  const { data: products = [], isLoading: loading, error } = useProducts();
+  const deleteProduct = useDeleteProduct();
 
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
-    try {
-      await axiosClient.delete<ApiResponse<null>>(`/products/${id}`);
-      setProducts((prev) => prev.filter((p) => p.id !== id));
-    } catch {
-      alert("Failed to delete product");
-    }
+    deleteProduct.mutate(id);
   };
 
   return (
@@ -46,7 +23,7 @@ export default function ProductsListPage() {
       {loading ? (
         <div>Loading...</div>
       ) : error ? (
-        <div className="text-red-500">{error}</div>
+        <div className="text-red-500">{error instanceof Error ? error.message : "Failed to load products"}</div>
       ) : (
         <table className="min-w-full bg-white border rounded shadow">
           <thead>
@@ -61,7 +38,7 @@ export default function ProductsListPage() {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
+            {(products as Product[]).map((product) => (
               <tr key={product.id} className="hover:bg-gray-50">
                 <td className="py-2 px-4 border-b">{product.id}</td>
                 <td className="py-2 px-4 border-b">{product.name}</td>

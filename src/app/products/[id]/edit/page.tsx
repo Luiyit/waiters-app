@@ -1,42 +1,30 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useProduct, useUpdateProduct } from "@/app/products/productHooks";
 import { useRouter, useParams } from "next/navigation";
-import axiosClient from "@/clients/axiosClient";
-import type { Product, NewProduct } from "@/types/products";
-import type { ApiResponse } from "@/types/global";
+import type { NewProduct } from "@/types/products";
 
 export default function EditProductPage() {
   const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
+  const { data, isLoading, error: fetchError } = useProduct(id);
+  const updateProduct = useUpdateProduct();
   const [form, setForm] = useState<NewProduct>({
     name: "",
     price: 0,
     category: "",
     area: "",
     isAvailable: true,
-    description: "",
   });
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) return;
-    const fetchProduct = async () => {
-      setLoading(true);
-      try {
-        const res = await axiosClient.get<ApiResponse<Product>>(`/products/${id}`);
-        const { name, price, category, area, isAvailable } = res.data.data;
-        setForm({ name, price, category, area, isAvailable });
-        setError(null);
-      } catch {
-        setError("Failed to load product");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProduct();
-  }, [id]);
+    if (data) {
+      const { name, price, category, area, isAvailable } = data;
+      setForm({ name, price, category, area, isAvailable });
+    }
+  }, [data]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -49,23 +37,21 @@ export default function EditProductPage() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError(null);
-    try {
-      await axiosClient.put<ApiResponse<Product>>(`/products/${id}`,
-        form
-      );
-      router.push("/products");
-    } catch {
-      setError("Failed to update product");
-    } finally {
-      setLoading(false);
-    }
+    updateProduct.mutate(
+      { id, form },
+      {
+        onSuccess: () => router.push("/products"),
+        onError: () => setError("Failed to update product"),
+      }
+    );
   };
 
-  if (loading) return <div className="max-w-xl mx-auto py-8">Loading...</div>;
+  if (isLoading) return <div className="max-w-xl mx-auto py-8">Loading...</div>;
+  if (fetchError) return <div className="max-w-xl mx-auto py-8 text-red-500">Failed to load product</div>;
+  const loading = updateProduct.isPending;
 
   return (
     <div className="max-w-xl mx-auto py-8">

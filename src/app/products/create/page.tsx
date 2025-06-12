@@ -1,12 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import axiosClient from "@/clients/axiosClient";
-import type { Product, NewProduct } from "@/types/products";
-import type { ApiResponse } from "@/types/global";
+import { useCreateProduct } from "../productHooks";
+import type { NewProduct } from "@/types/products";
 
 export default function CreateProductPage() {
   const router = useRouter();
+  const createProduct = useCreateProduct();
   const [form, setForm] = useState<NewProduct>({
     name: "",
     price: 0,
@@ -15,7 +15,6 @@ export default function CreateProductPage() {
     isAvailable: true,
   });
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -30,17 +29,14 @@ export default function CreateProductPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError(null);
-    try {
-      await axiosClient.post<ApiResponse<Product>>("/products", form);
-      router.push("/products");
-    } catch {
-      setError("Failed to create product");
-    } finally {
-      setLoading(false);
-    }
+    createProduct.mutate(form, {
+      onSuccess: () => router.push("/products"),
+      onError: () => setError("Failed to create product"),
+    });
   };
+
+  const loading = createProduct.isPending;
 
   return (
     <div className="max-w-xl mx-auto py-8">
