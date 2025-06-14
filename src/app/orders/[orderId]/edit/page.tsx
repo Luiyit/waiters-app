@@ -1,14 +1,17 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useOrder, useUpdateOrder, useTables } from "../../orderHooks";
 import type { NewOrder } from "@/types/orders";
 
-export default function EditOrderPage({ params }: { params: { orderId: string } }) {
+export default function EditOrderPage({ params }: { params: Promise<{ orderId: string }> }) {
   const router = useRouter();
-  const { data: order, isLoading: orderLoading } = useOrder(params.orderId);
+  const { orderId } = use(params);
+
+  const { data: order, isLoading: orderLoading } = useOrder(orderId);
   const { data: tables, isLoading: tablesLoading } = useTables();
   const updateOrder = useUpdateOrder();
+
   const [form, setForm] = useState<NewOrder>({ tableId: "" });
   const [error, setError] = useState<string | null>(null);
 
@@ -26,7 +29,7 @@ export default function EditOrderPage({ params }: { params: { orderId: string } 
     e.preventDefault();
     setError(null);
     updateOrder.mutate(
-      { id: params.orderId, form },
+      { id: orderId, form },
       {
         onSuccess: () => router.push("/orders"),
         onError: () => setError("Failed to update order"),

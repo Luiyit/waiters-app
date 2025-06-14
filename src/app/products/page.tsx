@@ -4,12 +4,16 @@ import React from "react";
 import Link from "next/link";
 import { Product } from "@/types/products";
 import { useProducts, useDeleteProduct } from "./productHooks";
+import { useSession } from "next-auth/react";
 
 export default function ProductsListPage() {
+  // console log the active nextAuth session
+  const { data: session } = useSession();
+  console.log(session);
   const { data: products = [], isLoading: loading, error } = useProducts();
   const deleteProduct = useDeleteProduct();
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     deleteProduct.mutate(id);
   };

@@ -1,15 +1,14 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { useProductItem, useUpdateProductItem, useDeleteProductItem } from "../../orderItemHooks";
 import type { NewProductItem } from "@/types/orderItems";
 
-export default function EditProductItemPage({ params }: { params: { orderItemId: string } }) {
+export default function EditProductItemPage({ params }: { params: Promise<{ orderId: string, orderItemId: string }> }) {
   const router = useRouter();
-  const urlParams = useParams();
-  const orderId = urlParams.orderId as string;
-  const { data: productItem, isLoading } = useProductItem(orderId, params.orderItemId);
+  const {orderId, orderItemId} = use(params);
+  const { data: productItem, isLoading } = useProductItem(orderId, orderItemId);
   const updateProductItem = useUpdateProductItem(orderId);
   const deleteProductItem = useDeleteProductItem(orderId);
   const [form, setForm] = useState<Partial<NewProductItem>>({
@@ -35,7 +34,7 @@ export default function EditProductItemPage({ params }: { params: { orderItemId:
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    updateProductItem.mutate({ id: params.orderItemId, form }, {
+    updateProductItem.mutate({ id: orderItemId, form }, {
       onSuccess: () => router.push("../../orderItems"),
       onError: () => setError("Failed to update order item"),
     });
@@ -43,7 +42,7 @@ export default function EditProductItemPage({ params }: { params: { orderItemId:
 
   const handleDelete = async () => {
     setError(null);
-    deleteProductItem.mutate(params.orderItemId, {
+    deleteProductItem.mutate(orderItemId, {
       onSuccess: () => router.push("../../orderItems"),
       onError: () => setError("Failed to delete order item"),
     });

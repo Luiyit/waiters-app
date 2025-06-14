@@ -1,15 +1,13 @@
 "use client";
-import React from "react";
+import React, { use } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { useProductItems, useDeleteProductItem } from "./orderItemHooks";
 import { useOrder } from "../../orderHooks";
 import type { ProductItem } from "@/types/orderItems";
 import { OrderStatus } from "@/types/orders";
 
-export default function ProductItemsListPage() {
-  const params = useParams();
-  const orderId = params.orderId as string;
+export default function ProductItemsListPage({ params }: { params: Promise<{ orderId: string }> }) {
+  const { orderId } = use(params);
   const { data: items = [], isLoading, error } = useProductItems(orderId);
   const deleteProductItem = useDeleteProductItem(orderId);
   const { data: order } = useOrder(orderId);

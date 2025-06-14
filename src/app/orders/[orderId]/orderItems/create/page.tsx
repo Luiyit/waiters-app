@@ -1,15 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useCreateProductItem } from "../orderItemHooks";
 import { useProducts } from "@/app/products/productHooks";
 import type { NewProductItem } from "@/types/orderItems";
 import Link from "next/link";
 
-export default function CreateProductItemPage() {
+export default function CreateProductItemPage({ params }: { params: Promise<{ orderId: string }> }) {
   const router = useRouter();
-  const params = useParams();
-  const orderId = params.orderId as string;
+  const { orderId } = use(params);
   const createProductItem = useCreateProductItem(orderId);
   const { data: products, isLoading } = useProducts();
   const [form, setForm] = useState<NewProductItem>({

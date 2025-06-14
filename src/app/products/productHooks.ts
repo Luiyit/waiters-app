@@ -31,7 +31,7 @@ export function useCreateProduct() {
 export function useDeleteProduct() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       await axiosClient.delete<ApiResponse<null>>(`${PRODUCTS_PATH}/${id}`);
     },
     onSuccess: () => {
