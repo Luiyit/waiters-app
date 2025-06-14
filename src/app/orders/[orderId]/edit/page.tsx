@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { useOrder, useUpdateOrder, useTables } from "../../orderHooks";
 import type { NewOrder } from "@/types/orders";
 
-export default function EditOrderPage({ params }: { params: { id: string } }) {
+export default function EditOrderPage({ params }: { params: { orderId: string } }) {
   const router = useRouter();
-  const { data: order, isLoading: orderLoading } = useOrder(params.id);
+  const { data: order, isLoading: orderLoading } = useOrder(params.orderId);
   const { data: tables, isLoading: tablesLoading } = useTables();
   const updateOrder = useUpdateOrder();
   const [form, setForm] = useState<NewOrder>({ tableId: "" });
@@ -26,7 +26,7 @@ export default function EditOrderPage({ params }: { params: { id: string } }) {
     e.preventDefault();
     setError(null);
     updateOrder.mutate(
-      { id: params.id, form },
+      { id: params.orderId, form },
       {
         onSuccess: () => router.push("/orders"),
         onError: () => setError("Failed to update order"),
