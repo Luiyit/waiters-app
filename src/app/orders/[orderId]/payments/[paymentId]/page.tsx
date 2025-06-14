@@ -1,13 +1,11 @@
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEditPayment, usePayment } from '../../../paymentsHooks';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { PaymentMethod } from '@/types/payments';
 
 // Edit payment page
-export default function EditPaymentPage() {
-  const params = useParams();
-  const orderId = params?.orderId as string;
-  const paymentId = params?.paymentId as string;
+export default function EditPaymentPage({ params }: { params: Promise<{ orderId: string, paymentId: string }> }) {
+  const { orderId, paymentId } = use(params);
   const router = useRouter();
   const { data: payment, isLoading } = usePayment(orderId, paymentId);
   const editPayment = useEditPayment(orderId, paymentId);

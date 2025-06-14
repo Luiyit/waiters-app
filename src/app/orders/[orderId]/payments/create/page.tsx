@@ -1,12 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import React, { use, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useCreatePayment } from "../../../paymentsHooks";
 import { PaymentMethod } from "@/types/payments";
 
-export default function CreatePaymentPage() {
-  const params = useParams();
-  const orderId = params?.orderId as string;
+export default function CreatePaymentPage({ params }: { params: Promise<{ orderId: string }> }) {
+  const { orderId } = use(params);
   const router = useRouter();
   const createPayment = useCreatePayment(orderId);
   const [form, setForm] = useState<{ method: PaymentMethod }>({ method: "CASH" });

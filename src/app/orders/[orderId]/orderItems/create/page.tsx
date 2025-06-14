@@ -1,6 +1,6 @@
 "use client";
 import React, { use, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useCreateProductItem } from "../orderItemHooks";
 import { useProducts } from "@/app/products/productHooks";
 import type { NewProductItem } from "@/types/orderItems";

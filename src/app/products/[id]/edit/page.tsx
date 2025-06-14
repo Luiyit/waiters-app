@@ -1,13 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useProduct, useUpdateProduct } from "@/app/products/productHooks";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import type { NewProduct } from "@/types/products";
 
-export default function EditProductPage() {
+export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
-  const params = useParams();
-  const id = params?.id as string;
+  const { id } = use(params);
   const { data, isLoading, error: fetchError } = useProduct(id);
   const updateProduct = useUpdateProduct();
   const [form, setForm] = useState<NewProduct>({

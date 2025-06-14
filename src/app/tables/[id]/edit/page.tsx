@@ -1,13 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useTable, useUpdateTable } from "@/app/tables/tableHooks";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import type { NewTable, Table } from "@/types/tables";
 
-export default function EditTablePage() {
+export default function EditTablePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
-  const params = useParams();
-  const id = params?.id as string;
+  const { id } = use(params);
   const { data, isLoading, error: fetchError } = useTable(id);
   const updateTable = useUpdateTable();
   const [form, setForm] = useState<NewTable>({
