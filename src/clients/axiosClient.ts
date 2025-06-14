@@ -9,7 +9,12 @@ const axiosClient: AxiosInstance = axios.create({
 // Request interceptor
 axiosClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // TODO: Add authentication headers here in the future
+    // Add Bearer authentication header if token is available
+    const token = process.env.NEXT_PUBLIC_SESSION_TOKEN;
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
     return config;
   },
   (error: AxiosError) => Promise.reject(error)
