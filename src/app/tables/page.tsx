@@ -17,7 +17,14 @@ export default function TablesListPage() {
   return (
     <div className="max-w-3xl mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Tables</h1>
+        <div className="flex items-center gap-4">
+          <Link href="/" className="text-gray-600 hover:text-gray-900">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          </Link>
+          <h1 className="text-2xl font-bold">Tables</h1>
+        </div>
         <Link href="/tables/create" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Create Table</Link>
       </div>
       {loading ? (
