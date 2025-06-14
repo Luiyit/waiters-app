@@ -57,7 +57,7 @@ export default function LoginPage() {
                 id="email"
                 name="email"
                 type="email"
-                value="dev@staging.com"
+                defaultValue="dev@staging.com"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
@@ -71,7 +71,7 @@ export default function LoginPage() {
                 id="password"
                 name="password"
                 type="password"
-                value="TestPassword123!"
+                defaultValue="TestPassword123!"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
