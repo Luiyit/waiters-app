@@ -1,3 +1,5 @@
+'use client';
+
 import { useRouter } from 'next/navigation';
 import { useEditPayment, usePayment } from '../../../paymentsHooks';
 import { useState, useEffect, use } from 'react';
