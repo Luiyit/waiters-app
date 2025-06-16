@@ -1,14 +1,11 @@
 "use client";
 import React, { useState, use } from "react";
 import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 import { useProduct } from "@/app/products/productHooks";
 import { useSubProducts, useSearchSubProducts, useLinkSubProduct, useDeleteSubProduct } from "@/app/products/subProductHooks";
-import type { SubProduct } from "@/types/subProducts";
 
 export default function SubProductsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const { id: productId } = use(params);
   const { data: product, isLoading: isProductLoading } = useProduct(productId);
   const { data: linkedSubProducts = [], isLoading: isSubProductsLoading } = useSubProducts(productId);
@@ -42,8 +39,30 @@ export default function SubProductsPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="max-w-4xl mx-auto py-8">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex items-center gap-4 mb-6">
+        <button
+          onClick={() => router.push(`/products`)}
+          className="text-gray-600 hover:text-gray-800"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+            />
+          </svg>
+        </button>
         <h1 className="text-2xl font-bold">Sub-Products for {product?.name}</h1>
+      </div>
+
+      <div className="flex justify-end mb-6">
         <button
           onClick={() => router.push(`/products/${productId}/sub-products/create`)}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"

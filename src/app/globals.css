@@ -24,3 +24,31 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Table styles */
+.row-unavailable {
+  background-color: rgb(254 242 242); /* bg-red-50 */
+}
+
+.row-unavailable td {
+  background-color: rgb(254 242 242);
+}
+
+/* Responsive table styles */
+@media (min-width: 640px) {
+  table {
+    display: inline-table !important;
+  }
+
+  thead tr:not(:first-child) {
+    display: none;
+  }
+}
+
+td:not(:last-child) {
+  border-bottom: 0;
+}
+
+th:not(:last-child) {
+  border-bottom: 2px solid rgba(0, 0, 0, .1);
+}

@@ -43,7 +43,10 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <ReactQueryProvider>{children}</ReactQueryProvider>
+          <ReactQueryProvider>
+            <div className="p-4 bg-gray-100">
+              {children}            </div>
+          </ReactQueryProvider>
         </Providers>
       </body>
     </html>

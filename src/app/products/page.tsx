@@ -5,6 +5,10 @@ import Link from "next/link";
 import { Product } from "@/types/products";
 import { useProducts, useDeleteProduct } from "./productHooks";
 import { useSession } from "next-auth/react";
+import { Table } from "@/components/Table";
+import { ColumnDef } from "@tanstack/react-table";
+import { PencilSquareIcon, FolderIcon, TrashIcon, ArrowLeftIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { Button } from "@/components/Button";
 
 export default function ProductsListPage() {
   // console log the active nextAuth session
@@ -18,56 +22,89 @@ export default function ProductsListPage() {
     deleteProduct.mutate(id);
   };
 
+  const columns: ColumnDef<Product>[] = [
+    {
+      accessorKey: "name",
+      header: "Name",
+    },
+    {
+      accessorKey: "price",
+      header: "Price",
+      cell: ({ row }) => `$${row.original.price.toFixed(2)}`,
+    },
+    {
+      accessorKey: "category",
+      header: "Category",
+    },
+    {
+      accessorKey: "area",
+      header: "Area",
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => (
+        <div className="flex gap-2">
+          <Link 
+            href={`/products/${row.original.id}/edit`} 
+            className="text-blue-600 hover:text-blue-800 transition-colors"
+            title="Edit"
+          >
+            <PencilSquareIcon className="h-5 w-5" />
+          </Link>
+          <Link 
+            href={`/products/${row.original.id}/sub-products`} 
+            className="text-green-600 hover:text-green-800 transition-colors"
+            title="Sub-Products"
+          >
+            <FolderIcon className="h-5 w-5" />
+          </Link>
+          <button 
+            onClick={() => handleDelete(row.original.id)} 
+            className="text-red-600 hover:text-red-800 transition-colors"
+            title="Delete"
+          >
+            <TrashIcon className="h-5 w-5" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="max-w-3xl mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="text-gray-600 hover:text-gray-900">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </Link>
-          <h1 className="text-2xl font-bold">Products</h1>
+        <div className="flex items-center">
+          <Button
+            href="/"
+            variant="ghost"
+            size="icon"
+            icon={ArrowLeftIcon}
+            className="text-gray-600 hover:text-gray-900"
+          />
+          Products
         </div>
-        <Link href="/products/create" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Create Product</Link>
+        <Button
+          href="/products/create"
+          variant="outline"
+          icon={PlusIcon}
+        >
+          Product
+        </Button>
       </div>
       {loading ? (
         <div>Loading...</div>
       ) : error ? (
         <div className="text-red-500">{error instanceof Error ? error.message : "Failed to load products"}</div>
       ) : (
-        <table className="min-w-full bg-white border rounded shadow">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b">ID</th>
-              <th className="py-2 px-4 border-b">Name</th>
-              <th className="py-2 px-4 border-b">Price</th>
-              <th className="py-2 px-4 border-b">Category</th>
-              <th className="py-2 px-4 border-b">Area</th>
-              <th className="py-2 px-4 border-b">Available</th>
-              <th className="py-2 px-4 border-b">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {(products as Product[]).map((product) => (
-              <tr key={product.id} className="hover:bg-gray-50">
-                <td className="py-2 px-4 border-b">{product.id}</td>
-                <td className="py-2 px-4 border-b">{product.name}</td>
-                <td className="py-2 px-4 border-b">${product.price.toFixed(2)}</td>
-                <td className="py-2 px-4 border-b">{product.category}</td>
-                <td className="py-2 px-4 border-b">{product.area}</td>
-                <td className="py-2 px-4 border-b">{product.isAvailable ? "Yes" : "No"}</td>
-                <td className="py-2 px-4 border-b">
-                  <div className="flex gap-2">
-                    <Link href={`/products/${product.id}/edit`} className="text-blue-600 hover:underline">Edit</Link>
-                    <Link href={`/products/${product.id}/sub-products`} className="text-green-600 hover:underline">Sub-Products</Link>
-                    <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:underline">Delete</button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="container">
+          <Table 
+            data={products} 
+            columns={columns} 
+            getRowClassName={(row) => !row.isAvailable ? 'row-unavailable' : ''}
+            className="my-5"
+          />
+        </div>
       )}
     </div>
   );
