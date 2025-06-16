@@ -58,7 +58,7 @@ export default function OrdersListPage() {
               <tr key={order.id} className="hover:bg-gray-50">
                 <td className="py-2 px-4 border-b">
                   <Link
-                    href={`/orders/${order.id}/orderItems`}
+                    href={`/orders/${order.id}/orderProducts`}
                     className="text-blue-600 hover:underline"
                   >
                     {order.id}
@@ -72,6 +72,12 @@ export default function OrdersListPage() {
                   {new Date(order.createdAt).toLocaleString()}
                 </td>
                 <td className="py-2 px-4 border-b flex gap-2">
+                  <Link
+                    href={`/orders/${order.id}/orderProducts`}
+                    className="text-blue-600 hover:underline"
+                  >
+                    Products
+                  </Link>
                   <Link
                     href={`/orders/${order.id}/edit`}
                     className="text-blue-600 hover:underline"

@@ -3,13 +3,13 @@ import axiosClient from "@/clients/axiosClient";
 import type { ApiResponse } from "@/types/global";
 import type { ProductItem, NewProductItem } from "@/types/orderItems";
 
-const ORDER_ITEMS_PATH = "/orders/:orderId/product-items";
+const ORDER_PRODUCTS_PATH = "/orders/:orderId/products";
 
 export function useProductItems(orderId: string) {
   return useQuery<ProductItem[]>({
     queryKey: ["productItems", orderId],
     queryFn: async () => {
-      const url = ORDER_ITEMS_PATH.replace(":orderId", orderId);
+      const url = ORDER_PRODUCTS_PATH.replace(":orderId", orderId);
       const res = await axiosClient.get<ApiResponse<ProductItem[]>>(url);
       return res.data.data;
     },
@@ -21,7 +21,7 @@ export function useCreateProductItem(orderId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (form: NewProductItem) => {
-      const url = ORDER_ITEMS_PATH.replace(":orderId", orderId);
+      const url = ORDER_PRODUCTS_PATH.replace(":orderId", orderId);
       const res = await axiosClient.post<ApiResponse<ProductItem>>(url, { record: form });
       return res.data.data;
     },
@@ -35,7 +35,7 @@ export function useProductItem(orderId: string, id: string) {
   return useQuery({
     queryKey: ["productItem", orderId, id],
     queryFn: async () => {
-      const url = ORDER_ITEMS_PATH.replace(":orderId", orderId) + `/${id}`;
+      const url = ORDER_PRODUCTS_PATH.replace(":orderId", orderId) + `/${id}`;
       const res = await axiosClient.get<ApiResponse<ProductItem>>(url);
       return res.data.data;
     },
@@ -47,7 +47,7 @@ export function useUpdateProductItem(orderId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, form }: { id: string; form: Partial<NewProductItem> }) => {
-      const url = ORDER_ITEMS_PATH.replace(":orderId", orderId) + `/${id}`;
+      const url = ORDER_PRODUCTS_PATH.replace(":orderId", orderId) + `/${id}`;
       await axiosClient.put(url, { record: form });
     },
     onSuccess: (_data: unknown, variables: { id: string; form: Partial<NewProductItem> }) => {
@@ -61,7 +61,7 @@ export function useDeleteProductItem(orderId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const url = ORDER_ITEMS_PATH.replace(":orderId", orderId) + `/${id}`;
+      const url = ORDER_PRODUCTS_PATH.replace(":orderId", orderId) + `/${id}`;
       await axiosClient.delete(url);
     },
     onSuccess: (_data, id) => {
