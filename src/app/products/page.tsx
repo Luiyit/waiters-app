@@ -57,9 +57,12 @@ export default function ProductsListPage() {
                 <td className="py-2 px-4 border-b">{product.category}</td>
                 <td className="py-2 px-4 border-b">{product.area}</td>
                 <td className="py-2 px-4 border-b">{product.isAvailable ? "Yes" : "No"}</td>
-                <td className="py-2 px-4 border-b flex gap-2">
-                  <Link href={`/products/${product.id}/edit`} className="text-blue-600 hover:underline">Edit</Link>
-                  <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:underline">Delete</button>
+                <td className="py-2 px-4 border-b">
+                  <div className="flex gap-2">
+                    <Link href={`/products/${product.id}/edit`} className="text-blue-600 hover:underline">Edit</Link>
+                    <Link href={`/products/${product.id}/sub-products`} className="text-green-600 hover:underline">Sub-Products</Link>
+                    <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:underline">Delete</button>
+                  </div>
                 </td>
               </tr>
             ))}
