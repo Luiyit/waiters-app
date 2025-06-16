@@ -3,13 +3,16 @@ import axiosClient from "@/clients/axiosClient";
 import type { SubProduct, NewSubProduct } from "@/types/subProducts";
 import type { ApiResponse } from "@/types/global";
 
-const SUB_PRODUCTS_PATH = "/admin/sub-products";
+const SUB_PRODUCTS_PATH = "/admin/products/:productId/sub-products";
+const SUB_PRODUCT_PATH = "/admin/products/:productId/sub-products/:subProductId";
+const SUB_PRODUCTS_SEARCH_PATH = "/admin/sub-products/search";
 
 export function useSubProducts(productId: string) {
   return useQuery({
     queryKey: ["sub-products", productId],
     queryFn: async () => {
-      const res = await axiosClient.get<ApiResponse<SubProduct[]>>(`/admin/products/${productId}/sub-products`);
+      const path = SUB_PRODUCTS_PATH.replace(":productId", productId);
+      const res = await axiosClient.get<ApiResponse<SubProduct[]>>(path);
       return res.data.data;
     },
     enabled: !!productId,
@@ -20,10 +23,8 @@ export function useCreateSubProduct(productId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (form: NewSubProduct) => {
-      const res = await axiosClient.post<ApiResponse<SubProduct>>(
-        `/admin/products/${productId}/sub-products`,
-        { record: form }
-      );
+      const path = SUB_PRODUCTS_PATH.replace(":productId", productId);
+      const res = await axiosClient.post<ApiResponse<SubProduct>>(path, { record: form });
       return res.data.data;
     },
     onSuccess: () => {
@@ -36,9 +37,12 @@ export function useUpdateSubProduct(productId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, form }: { id: string; form: NewSubProduct }) => {
-      await axiosClient.put(`/admin/products/${productId}/sub-products/${id}`, { record: form });
+      const path = SUB_PRODUCT_PATH
+        .replace(":productId", productId)
+        .replace(":subProductId", id);
+      await axiosClient.put(path, { record: form });
     },
-    onSuccess: (_data: unknown, variables: { id: string; form: NewSubProduct }) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sub-products", productId] });
     },
   });
@@ -48,7 +52,10 @@ export function useDeleteSubProduct(productId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (subProductId: string) => {
-      await axiosClient.delete<ApiResponse<null>>(`/admin/products/${productId}/sub-products/${subProductId}/unlink`);
+      const path = SUB_PRODUCT_PATH
+        .replace(":productId", productId)
+        .replace(":subProductId", subProductId);
+      await axiosClient.delete<ApiResponse<null>>(`${path}/unlink`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sub-products", productId] });
@@ -60,9 +67,10 @@ export function useSubProduct(productId: string, subProductId: string) {
   return useQuery({
     queryKey: ["sub-product", productId, subProductId],
     queryFn: async () => {
-      const res = await axiosClient.get<ApiResponse<SubProduct>>(
-        `/admin/products/${productId}/sub-products/${subProductId}`
-      );
+      const path = SUB_PRODUCT_PATH
+        .replace(":productId", productId)
+        .replace(":subProductId", subProductId);
+      const res = await axiosClient.get<ApiResponse<SubProduct>>(path);
       return res.data.data;
     },
     enabled: !!productId && !!subProductId,
@@ -74,7 +82,7 @@ export function useSearchSubProducts(query?: string) {
     queryKey: ["sub-products-search", query],
     queryFn: async () => {
       if (!query || query.length < 2) return [];
-      const res = await axiosClient.get<ApiResponse<SubProduct[]>>(`/admin/sub-products/search`, {
+      const res = await axiosClient.get<ApiResponse<SubProduct[]>>(SUB_PRODUCTS_SEARCH_PATH, {
         params: { q: query }
       });
       return res.data.data;
@@ -87,9 +95,10 @@ export function useLinkSubProduct(productId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (subProductId: string) => {
-      await axiosClient.post<ApiResponse<null>>(
-        `/admin/products/${productId}/sub-products/${subProductId}/link`
-      );
+      const path = SUB_PRODUCT_PATH
+        .replace(":productId", productId)
+        .replace(":subProductId", subProductId);
+      await axiosClient.post<ApiResponse<null>>(`${path}/link`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sub-products", productId] });

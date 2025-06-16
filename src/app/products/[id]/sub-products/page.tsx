@@ -21,6 +21,7 @@ export default function SubProductsPage({ params }: { params: Promise<{ id: stri
       await linkSubProduct.mutateAsync(subProductId);
       setSearchQuery("");
     } catch (err) {
+      console.error(err);
       setError("Failed to link sub-product");
     }
   };
@@ -31,6 +32,7 @@ export default function SubProductsPage({ params }: { params: Promise<{ id: stri
     try {
       await deleteSubProduct.mutateAsync(subProductId);
     } catch (err) {
+      console.error(err);
       setError("Failed to unlink sub-product");
     }
   };

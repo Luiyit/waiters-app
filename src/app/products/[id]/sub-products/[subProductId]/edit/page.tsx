@@ -46,6 +46,7 @@ export default function EditSubProductPage({
       await updateSubProduct.mutateAsync({ id: subProductId, form });
       router.push(`/products/${productId}/sub-products`);
     } catch (error) {
+      console.error(error);
       setError("Failed to update sub-product");
     }
   };
