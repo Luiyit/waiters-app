@@ -27,7 +27,7 @@ export default function CreateProductItemPage({ params }: { params: Promise<{ or
     e.preventDefault();
     setError(null);
     createProductItem.mutate(form, {
-      onSuccess: () => router.push("../orderItems"),
+      onSuccess: () => router.push("../orderProducts"),
       onError: () => setError("Failed to create order item"),
     });
   };
@@ -36,7 +36,7 @@ export default function CreateProductItemPage({ params }: { params: Promise<{ or
     <div className="max-w-md mx-auto py-8">
       <div className="flex items-center gap-2 mb-6">
         <Link
-          href={"../orderItems"}
+          href={"../orderProducts"}
           className="text-blue-600 hover:text-blue-800 text-xl mr-2"
           aria-label="Back to Order Items"
         >
