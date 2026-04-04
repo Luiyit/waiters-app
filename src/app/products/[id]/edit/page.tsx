@@ -16,13 +16,14 @@ export default function EditProductPage() {
     category: "",
     area: "",
     isAvailable: true,
+    order: 0,
   });
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (data) {
-      const { name, price, category, area, isAvailable } = data;
-      setForm({ name, price, category, area, isAvailable });
+      const { name, price, category, area, isAvailable, order } = data;
+      setForm({ name, price, category, area, isAvailable, order });
     }
   }, [data]);
 
@@ -96,6 +97,18 @@ export default function EditProductPage() {
             className="w-full border px-3 py-2 rounded"
             name="area"
             value={form.area}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-medium">Order</label>
+          <input
+            className="w-full border px-3 py-2 rounded"
+            name="order"
+            type="number"
+            min="0"
+            value={form.order}
             onChange={handleChange}
             required
           />
