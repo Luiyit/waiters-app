@@ -6,7 +6,7 @@ export interface NewProduct {
   category: string;
   area: string;
   isAvailable: boolean;
-  order?: number;
+  order: number;
 }
 
 export interface Product extends NewProduct, Model {}
