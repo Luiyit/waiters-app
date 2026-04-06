@@ -1,12 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useCreateProduct } from "../productHooks";
+import { useCreateProduct, useProducts } from "../productHooks";
 import type { NewProduct } from "@/types/products";
 
 export default function CreateProductPage() {
   const router = useRouter();
   const createProduct = useCreateProduct();
+  const { data: products = [] } = useProducts();
   const [form, setForm] = useState<NewProduct>({
     name: "",
     price: 0,
@@ -16,6 +17,13 @@ export default function CreateProductPage() {
     order: 0,
   });
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (products.length > 0) {
+      const maxOrder = Math.max(...products.map((product) => product.order));
+      setForm((prev) => ({ ...prev, order: maxOrder + 1 }));
+    }
+  }, [products]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -84,17 +92,6 @@ export default function CreateProductPage() {
             value={form.area}
             onChange={handleChange}
             required
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-medium">Order</label>
-          <input
-            className="w-full border px-3 py-2 rounded"
-            name="order"
-            type="number"
-            min="0"
-            value={form.order}
-            onChange={handleChange}
           />
         </div>
         <div>
