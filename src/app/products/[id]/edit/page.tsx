@@ -17,13 +17,14 @@ export default function EditProductPage() {
     area: "",
     isAvailable: true,
     order: 0,
+    isFixed: false,
   });
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (data) {
-      const { name, price, category, area, isAvailable, order } = data;
-      setForm({ name, price, category, area, isAvailable, order });
+      const { name, price, category, area, isAvailable, order, isFixed } = data;
+      setForm({ name, price, category, area, isAvailable, order, isFixed });
     }
   }, [data]);
 
@@ -108,9 +109,20 @@ export default function EditProductPage() {
             name="order"
             type="number"
             min="0"
-            value={form.order}
+            value={form.isFixed ? 0 : form.order}
             onChange={handleChange}
             required
+            disabled={form.isFixed}
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-medium">Fixed</label>
+          <input
+            type="checkbox"
+            name="isFixed"
+            checked={form.isFixed}
+            onChange={handleChange}
+            className="ml-2"
           />
         </div>
         <div>
