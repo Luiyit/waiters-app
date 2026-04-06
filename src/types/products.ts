@@ -6,6 +6,7 @@ export interface NewProduct {
   category: string;
   area: string;
   isAvailable: boolean;
+  isFixed: boolean;
   order: number;
 }
 
