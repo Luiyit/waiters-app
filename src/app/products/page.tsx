@@ -9,7 +9,11 @@ export default function ProductsListPage() {
   const { data: products = [], isLoading: loading, error } = useProducts();
   const deleteProduct = useDeleteProduct();
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: number, isFixed: boolean) => {
+    if (isFixed) {
+      alert("This product is fixed and cannot be deleted.");
+      return;
+    }
     if (!confirm("Are you sure you want to delete this product?")) return;
     deleteProduct.mutate(id);
   };
@@ -48,7 +52,14 @@ export default function ProductsListPage() {
                 <td className="py-2 px-4 border-b">{product.isAvailable ? "Yes" : "No"}</td>
                 <td className="py-2 px-4 border-b flex gap-2">
                   <Link href={`/products/${product.id}/edit`} className="text-blue-600 hover:underline">Edit</Link>
-                  <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:underline">Delete</button>
+                  <button
+                    onClick={() => handleDelete(product.id, product.isFixed)}
+                    className={`${product.isFixed ? "text-gray-400 cursor-not-allowed" : "text-red-600 hover:underline"}`}
+                    disabled={product.isFixed}
+                    title={product.isFixed ? "This product is fixed and cannot be deleted." : ""}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}

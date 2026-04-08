@@ -1,20 +1,29 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useCreateProduct } from "../productHooks";
+import { useCreateProduct, useProducts } from "../productHooks";
 import type { NewProduct } from "@/types/products";
 
 export default function CreateProductPage() {
   const router = useRouter();
   const createProduct = useCreateProduct();
+  const { data: products = [] } = useProducts();
   const [form, setForm] = useState<NewProduct>({
     name: "",
     price: 0,
     category: "",
     area: "",
     isAvailable: true,
+    order: 0,
   });
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (products.length > 0) {
+      const maxOrder = Math.max(...products.map((product) => product.order));
+      setForm((prev) => ({ ...prev, order: maxOrder + 1 }));
+    }
+  }, [products]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;

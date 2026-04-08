@@ -1,4 +1,4 @@
-import type { Model } from "@/types/global";
+import type { Model } from "./global";
 
 export interface NewProduct {
   name: string;
@@ -6,6 +6,8 @@ export interface NewProduct {
   category: string;
   area: string;
   isAvailable: boolean;
+  isFixed: boolean;
+  order: number;
 }
 
 export interface Product extends NewProduct, Model {}

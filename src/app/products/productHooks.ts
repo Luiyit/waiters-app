@@ -61,3 +61,16 @@ export function useUpdateProduct() {
     },
   });
 }
+
+export function useUpdateProductOrder() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, order }: { id: string; order: number }) => {
+      await axiosClient.patch(`/products/${id}/order`, { order });
+    },
+    onSuccess: (_data: unknown, variables: { id: string }) => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["product", variables.id] });
+    },
+  });
+}
