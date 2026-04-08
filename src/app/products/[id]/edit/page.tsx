@@ -46,7 +46,7 @@ export default function EditProductPage() {
       { id, form },
       {
         onSuccess: () => router.push("/products"),
-        onError: () => setError("Failed to update product"),
+        onError: () => setError("Backend is not available right now"),
       }
     );
   };
